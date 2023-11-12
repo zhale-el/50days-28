@@ -16,7 +16,8 @@ async function getUser(username) {
 }
 
 function createUserCard(user) {
-  const cardHtml = `<div class="card">
+  const cardHtml = `
+  <div class="card">
   <!------ profile ----->
   <div>
     <img
