@@ -6,12 +6,23 @@ const main = document.getElementById("main");
 async function getUser(username) {
   try {
     const { data } = await axios(APIURL + username);
-    console.log(data);
+
     createUserCard(data);
+    getRepos(username);
   } catch (err) {
     if (err.response.status == 404) {
       creatErrorCard("No profile with this username");
     }
+  }
+}
+
+async function getRepos(username) {
+  try {
+    const { data } = await axios(APIURL + username + "/repos?sort=created");
+
+    addReposToCard(data);
+  } catch (err) {
+    creatErrorCard("Problem fetching repos");
   }
 }
 
@@ -54,13 +65,26 @@ function creatErrorCard(msg) {
   main.innerHTML = cardHtml;
 }
 
+function addReposToCard(repos) {
+  const reposEl = document.getElementById("repos");
+
+  repos.slice(0, 5).forEach((repo) => {
+    const repoEl = document.createElement("a");
+    repoEl.classList.add("repo");
+    repoEl.href = repo.html_url;
+    repoEl.target = "_blank";
+    repoEl.innerText = repo.name;
+    reposEl.appendChild(repoEl);
+  });
+}
+
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const user = search.value;
 
   if (user) {
     getUser(user);
-    console.log(user);
+
     search.value = "";
   }
 });
